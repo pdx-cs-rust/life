@@ -1,4 +1,4 @@
-use std::fmt::*;
+use std::fmt::{self, *};
 
 use ndarray::prelude::*;
 use rand::*;
@@ -31,7 +31,7 @@ impl World {
 }
 
 impl Display for World {
-    fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         for row in self.0.axis_iter(Axis(0)) {
             let chars: String = row
                 .iter()
