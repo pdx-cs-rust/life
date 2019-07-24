@@ -21,7 +21,8 @@ impl World {
     }
 
     /// Make a new uniformly-populated arena.
-    fn random<T: Rng>(rng: &mut T) -> Self {
+    fn random() -> Self {
+        let mut rng = thread_rng();
         let mut world = Self::new();
         for cell in world.0.iter_mut() {
             *cell = rng.gen();
@@ -44,7 +45,6 @@ impl Display for World {
 }
 
 fn main() {
-    let mut rng = thread_rng();
-    let w = World::random(&mut rng);
+    let w = World::random();
     print!("{}", w);
 }
