@@ -1,9 +1,11 @@
 [package]
 name = "life"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["CS 410/510 Rust Summer 2019 <bart@cs.pdx.edu>"]
 edition = "2018"
+license-file = "LICENSE"
+repository = "https://github.com/pdx-cs-rust/life"
 
 [dependencies]
-ndarray = "*"
-rand = "*"
+ndarray = "0.12"
+rand = "0.7"
