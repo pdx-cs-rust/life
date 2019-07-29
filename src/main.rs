@@ -86,11 +86,19 @@ impl Display for World {
     }
 }
 
+fn clear_screen() {
+    print!("\u{1b}[H\u{1b}[2J\u{1b}[3J");
+}
+
 fn main() {
     let w = World::random();
+    clear_screen();
     print!("{}", w);
     for nw in w {
-        println!();
+        let duration =
+            std::time::Duration::from_millis(10);
+        std::thread::sleep(duration);
+        clear_screen();
         print!("{}", nw);
     }
 }
