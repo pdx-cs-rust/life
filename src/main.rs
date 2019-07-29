@@ -6,6 +6,8 @@
 //! [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 //! as implemented in Portland State University CS410/510
 //! Rust Summer 2019.
+mod neighborhood;
+use neighborhood::*;
 
 use std::fmt::{self, *};
 
@@ -21,6 +23,7 @@ const DIMS: (usize, usize) = (20, 70);
 const DISPLAY_CHARS: [char;2] = ['·', '●'];
 
 /// Life array / arena / world.
+#[derive(Clone)]
 struct World(Array2<bool>);
 
 impl World {
@@ -37,6 +40,36 @@ impl World {
             *cell = rng.gen();
         }
         world
+    }
+
+    fn update(&mut self) {
+        let old = &self.0;
+        let mut new = old.clone();
+        for (r, row) in old.outer_iter().enumerate() {
+            for (c, cell) in row.iter().enumerate() {
+                let count: u8 = Neighborhood::new((r, c), DIMS)
+                    .map(|(r, c)| old[[r, c]] as u8)
+                    .sum();
+                let life = match (cell, count) {
+                    (true, count) if count < 2 => false,
+                    (true, count) if count <= 3 => true,
+                    (true, _) => false,
+                    (false, count) if count == 3 => true,
+                    _ => false,
+                };
+                new[[r, c]] = life;
+            }
+        }
+        *self = World(new);
+    }
+}
+
+impl Iterator for World {
+    type Item = World;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.update();
+        Some(self.clone())
     }
 }
 
@@ -56,4 +89,8 @@ impl Display for World {
 fn main() {
     let w = World::random();
     print!("{}", w);
+    for nw in w {
+        println!();
+        print!("{}", nw);
+    }
 }
