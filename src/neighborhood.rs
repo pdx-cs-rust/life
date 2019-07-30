@@ -1,3 +1,5 @@
+/// Iterator producing row-column coordinates in the 3x3
+/// neighborhood surrounding the given coordinate.
 pub struct Neighborhood {
     rx: (usize, usize),
     x: (usize, usize),
@@ -5,6 +7,10 @@ pub struct Neighborhood {
 }
 
 impl Neighborhood {
+
+    /// Make a new neighborhood centered at `x`. The
+    /// returned coordinates will be clipped against the
+    /// bounding box `(0, 0)..rx`.
     pub fn new(x: (usize, usize), rx: (usize, usize)) -> Self {
         Self {
             x,
@@ -14,6 +20,8 @@ impl Neighborhood {
     }
 }
 
+// Check coordinate `x` for in-range `0..rx` after offset
+// `dx` and return the resulting offset coordinate if any.
 fn clip(x: usize, rx: usize, dx: isize) -> Option<usize> {
     let x = x as isize;
     let rx = rx as isize;
@@ -46,40 +54,3 @@ impl Iterator for Neighborhood {
         None
     }
 }
-
-
-/*
-#[test]
-fn test_neighbor() {
-    let nr = 4;
-    let nc = 5;
-    let ir = 3;
-    let ic = 4;
-    
-    let field: Vec<Vec<char>> = 
-        (0..nr).map(|r| {
-            (0..nc).map(|c| {
-                char::from((b'A' as usize + r * nc + c) as u8)
-            })
-            .collect()
-        })
-        .collect();
-    
-    for i in 0..nr {
-        for j in 0..nc {
-            if i == ir && j == ic {
-                print!("*");
-            } else {
-                print!("{}", field[i][j]);
-            }
-        }
-        println!();
-    }
-    println!();
-        
-    for (r, c) in Neighborhood::new((ir, ic), (nr, nc)) {
-        print!("{}", field[r][c]);
-    }
-    println!();
-}
-*/

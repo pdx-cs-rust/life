@@ -42,6 +42,8 @@ impl World {
         world
     }
 
+    /// Update the world in-place according to the Game of
+    /// Life rules.
     fn update(&mut self) {
         let old = &self.0;
         let mut new = old.clone();
@@ -86,10 +88,13 @@ impl Display for World {
     }
 }
 
+/// Emit an ANSI clear-screen escape sequence.  No flushing
+/// is done.
 fn clear_screen() {
     print!("\u{1b}[H\u{1b}[2J\u{1b}[3J");
 }
 
+/// Run the sim.
 fn main() {
     let w = World::random();
     clear_screen();
