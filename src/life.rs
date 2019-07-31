@@ -39,20 +39,15 @@ impl World {
         let old = &self.0;
         let mut new = old.clone();
         let dim = self.0.dim();
-        for (r, row) in old.outer_iter().enumerate() {
-            for (c, cell) in row.iter().enumerate() {
-                let count: u8 = Neighborhood::new((r, c), dim)
-                    .map(|(r, c)| old[[r, c]] as u8)
-                    .sum();
-                let life = match (cell, count) {
-                    (true, count) if count < 2 => false,
-                    (true, count) if count <= 3 => true,
-                    (true, _) => false,
-                    (false, count) if count == 3 => true,
-                    _ => false,
-                };
-                new[[r, c]] = life;
+        for (rc, &cell) in old.indexed_iter() {
+            let mut count = 0;
+            for rc in Neighborhood::new(rc, dim) {
+                count += old[rc] as u8;
+                if count > 3 {
+                    break;
+                }
             }
+            new[rc] = count == 3 || (count == 2 && cell);
         }
         *self = World(new);
     }
