@@ -2,10 +2,8 @@
 // see the file `LICENSE` in this distribution for license
 // terms.
 
-//! Conway's
-//! [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
-//! as implemented in Portland State University CS410/510
-//! Rust Summer 2019.
+//! Life engine.
+
 use crate::neighborhood::*;
 
 use std::fmt::{self, *};
@@ -50,17 +48,23 @@ impl World {
             new[rc] = count == 3 || (count == 2 && cell);
         }
         new.index_axis_mut(Axis(0), 0)
-            .iter_mut().for_each(|cell| *cell = !*cell);
+            .iter_mut()
+            .for_each(|cell| *cell = !*cell);
         new.index_axis_mut(Axis(0), dim.0 - 1)
-            .iter_mut().for_each(|cell| *cell = !*cell);
+            .iter_mut()
+            .for_each(|cell| *cell = !*cell);
         new.index_axis_mut(Axis(1), 0)
-            .iter_mut().for_each(|cell| *cell = !*cell);
+            .iter_mut()
+            .for_each(|cell| *cell = !*cell);
         new.index_axis_mut(Axis(1), dim.1 - 1)
-            .iter_mut().for_each(|cell| *cell = !*cell);
+            .iter_mut()
+            .for_each(|cell| *cell = !*cell);
         *self = World(new);
     }
 
-    pub fn cells<'a>(&'a self) -> impl Iterator<Item=(usize, usize, bool)> + 'a {
+    pub fn cells<'a>(
+        &'a self,
+    ) -> impl Iterator<Item = (usize, usize, bool)> + 'a {
         self.0.indexed_iter().map(|((r, c), &b)| (r, c, b))
     }
 }
@@ -87,4 +91,3 @@ impl Display for World {
         Ok(())
     }
 }
-

@@ -1,3 +1,9 @@
+// This program is licensed under the "MIT License". Please
+// see the file `LICENSE` in this distribution for license
+// terms.
+
+//! Life cell neighborhood iterator.
+
 /// Iterator producing row-column coordinates in the 3x3
 /// neighborhood surrounding the given coordinate.
 pub struct Neighborhood {
@@ -7,16 +13,11 @@ pub struct Neighborhood {
 }
 
 impl Neighborhood {
-
     /// Make a new neighborhood centered at `x`. The
     /// returned coordinates will be clipped against the
     /// bounding box `(0, 0)..rx`.
     pub fn new(x: (usize, usize), rx: (usize, usize)) -> Self {
-        Self {
-            x,
-            rx,
-            dx: (-1, -1),
-        }
+        Self { x, rx, dx: (-1, -1) }
     }
 }
 
