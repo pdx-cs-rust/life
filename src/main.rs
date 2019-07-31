@@ -77,7 +77,7 @@ impl Iterator for World {
 
 impl Display for World {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        for row in self.0.axis_iter(Axis(0)) {
+        for row in self.0.outer_iter() {
             let chars: String = row
                 .iter()
                 .map(|&on| DISPLAY_CHARS[on as usize])
