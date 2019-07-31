@@ -49,6 +49,14 @@ impl World {
             }
             new[rc] = count == 3 || (count == 2 && cell);
         }
+        new.index_axis_mut(Axis(0), 0)
+            .iter_mut().for_each(|cell| *cell = !*cell);
+        new.index_axis_mut(Axis(0), dim.0 - 1)
+            .iter_mut().for_each(|cell| *cell = !*cell);
+        new.index_axis_mut(Axis(1), 0)
+            .iter_mut().for_each(|cell| *cell = !*cell);
+        new.index_axis_mut(Axis(1), dim.1 - 1)
+            .iter_mut().for_each(|cell| *cell = !*cell);
         *self = World(new);
     }
 
