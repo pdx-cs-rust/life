@@ -1,109 +1,82 @@
-// This program is licensed under the "MIT License". Please
-// see the file `LICENSE` in this distribution for license
-// terms.
-
-//! Conway's
-//! [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
-//! as implemented in Portland State University CS410/510
-//! Rust Summer 2019.
 mod neighborhood;
-use neighborhood::*;
+mod life;
+use life::*;
 
-use std::fmt::{self, *};
+use ggez;
+use ggez::event;
+use ggez::graphics;
+use ggez::nalgebra as na;
 
-use ndarray::prelude::*;
-use rand::prelude::*;
+// Code adapted from the `ggez` home page.
+// https://ggez.rs
 
-// XXX Hardcoded for now.
-/// World dimensions.
-const DIMS: (usize, usize) = (20, 70);
+// Code inspired by
+// http://github.com/ironwall/rust-conway_life_game
 
-// XXX Hardcoded for now.
-/// Display characters for empty and full cells.
-const DISPLAY_CHARS: [char;2] = ['·', '●'];
+const WORLD_SIZE: (usize, usize) = (200, 300);
+const CELL_SIZE: f32 = 2.0;
+const SCREEN_SIZE: (f32, f32) = (
+    WORLD_SIZE.1 as f32 * CELL_SIZE,
+    WORLD_SIZE.0 as f32 * CELL_SIZE,
+);
 
-/// Life array / arena / world.
-#[derive(Clone)]
-struct World(Array2<bool>);
+struct MainState {
+    world: World,
+}
 
-impl World {
-    /// Make a new empty arena.
-    fn new() -> Self {
-        World(Array2::default(DIMS))
+impl MainState {
+    fn new() -> ggez::GameResult<MainState> {
+        let s = MainState {
+            world: World::random(WORLD_SIZE),
+        };
+        Ok(s)
+    }
+}
+
+impl event::EventHandler for MainState {
+    fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
+        self.world.update();
+        Ok(())
     }
 
-    /// Make a new uniformly-populated arena.
-    fn random() -> Self {
-        let mut rng = thread_rng();
-        let mut world = Self::new();
-        for cell in world.0.iter_mut() {
-            *cell = rng.gen();
-        }
-        world
-    }
+    fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
+        graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-    /// Update the world in-place according to the Game of
-    /// Life rules.
-    fn update(&mut self) {
-        let old = &self.0;
-        let mut new = old.clone();
-        for (r, row) in old.outer_iter().enumerate() {
-            for (c, cell) in row.iter().enumerate() {
-                let count: u8 = Neighborhood::new((r, c), DIMS)
-                    .map(|(r, c)| old[[r, c]] as u8)
-                    .sum();
-                let life = match (cell, count) {
-                    (true, count) if count < 2 => false,
-                    (true, count) if count <= 3 => true,
-                    (true, _) => false,
-                    (false, count) if count == 3 => true,
-                    _ => false,
-                };
-                new[[r, c]] = life;
+        let circle = graphics::Mesh::new_circle(
+            ctx,
+            graphics::DrawMode::fill(),
+            na::Point2::new(0.0, 0.0),
+            0.6 * CELL_SIZE,
+            0.5,
+            graphics::WHITE,
+        )?;
+
+        for (r, c, alive) in self.world.cells() {
+            if alive {
+                let coord = na::Point2::new(
+                    c as f32 * CELL_SIZE,
+                    r as f32 * CELL_SIZE,
+                );
+                graphics::draw(ctx, &circle, (coord,))?;
             }
         }
-        *self = World(new);
-    }
-}
 
-impl Iterator for World {
-    type Item = World;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.update();
-        Some(self.clone())
-    }
-}
-
-impl Display for World {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        for row in self.0.outer_iter() {
-            let chars: String = row
-                .iter()
-                .map(|&on| DISPLAY_CHARS[on as usize])
-                .collect();
-            writeln!(f, "{}", chars)?;
-        }
+        graphics::present(ctx)?;
         Ok(())
     }
 }
 
-/// Emit an ANSI clear-screen escape sequence.  No flushing
-/// is done.
-fn clear_screen() {
-    print!("\u{1b}[H\u{1b}[2J\u{1b}[3J");
-}
+pub fn main() -> ggez::GameResult { 
+    let cb = ggez::ContextBuilder::new(
+        "Life",
+        "PSU CS 410/510 Rust Su2019",
+    );
 
-/// Run the sim.
-fn main() {
-    let w = World::random();
-    clear_screen();
-    print!("{}", w);
-    for nw in w {
-        let duration =
-            std::time::Duration::from_millis(10);
-        std::thread::sleep(duration);
-        clear_screen();
-        print!("{}", nw);
-    }
+    let (ctx, event_loop) = &mut cb
+        .window_setup(ggez::conf::WindowSetup::default().title("Life"))
+        .window_mode(ggez::conf::WindowMode::default().dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
+        .build()?;
+
+    let state = &mut MainState::new()?;
+    event::run(ctx, event_loop, state)
 }

@@ -9,3 +9,4 @@ repository = "https://github.com/pdx-cs-rust/life"
 [dependencies]
 ndarray = "0.12"
 rand = "0.7"
+ggez = "0.5"
