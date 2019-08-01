@@ -53,7 +53,10 @@ impl event::EventHandler for MainState {
         let circle = graphics::Mesh::new_circle(
             ctx,
             graphics::DrawMode::fill(),
-            na::Point2::new(0.0, 0.0),
+            na::Point2::new(
+                0.5 * CELL_SIZE,
+                0.5 * CELL_SIZE,
+            ),
             0.6 * CELL_SIZE,
             0.5,
             graphics::WHITE,
