@@ -12,7 +12,7 @@ mod neighborhood;
 
 use life::*;
 
-use ggez::{self, event, graphics, error};
+use ggez::{self, error, event, graphics};
 
 // Code adapted from the `ggez` home page.
 // https://ggez.rs
@@ -22,10 +22,8 @@ use ggez::{self, event, graphics, error};
 
 const WORLD_SIZE: (usize, usize) = (200, 300);
 const CELL_SIZE: f32 = 2.0;
-const SCREEN_SIZE: (f32, f32) = (
-    WORLD_SIZE.1 as f32 * CELL_SIZE,
-    WORLD_SIZE.0 as f32 * CELL_SIZE,
-);
+const SCREEN_SIZE: (f32, f32) =
+    (WORLD_SIZE.1 as f32 * CELL_SIZE, WORLD_SIZE.0 as f32 * CELL_SIZE);
 
 struct MainState {
     world: World,
@@ -50,10 +48,7 @@ impl event::EventHandler<error::GameError> for MainState {
         let circle = graphics::Mesh::new_circle(
             ctx,
             graphics::DrawMode::fill(),
-            [
-                0.5 * CELL_SIZE,
-                0.5 * CELL_SIZE,
-            ],
+            [0.5 * CELL_SIZE, 0.5 * CELL_SIZE],
             0.6 * CELL_SIZE,
             0.5,
             graphics::Color::WHITE,
@@ -61,10 +56,8 @@ impl event::EventHandler<error::GameError> for MainState {
 
         for (r, c, alive) in self.world.cells() {
             if alive {
-                let coord = [
-                    c as f32 * CELL_SIZE,
-                    r as f32 * CELL_SIZE,
-                ];
+                let coord =
+                    [c as f32 * CELL_SIZE, r as f32 * CELL_SIZE];
                 graphics::draw(ctx, &circle, (coord,))?;
             }
         }
@@ -75,10 +68,8 @@ impl event::EventHandler<error::GameError> for MainState {
 }
 
 pub fn main() -> ggez::GameResult {
-    let cb = ggez::ContextBuilder::new(
-        "Life",
-        "PSU CS 410/510 Rust Su2019",
-    );
+    let cb =
+        ggez::ContextBuilder::new("Life", "PSU CS 410/510 Rust Su2019");
     let setup = ggez::conf::WindowSetup::default();
     let mode = ggez::conf::WindowMode::default();
 
