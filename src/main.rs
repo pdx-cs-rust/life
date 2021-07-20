@@ -12,10 +12,7 @@ mod neighborhood;
 
 use life::*;
 
-use ggez;
-use ggez::event;
-use ggez::graphics;
-use ggez::nalgebra as na;
+use ggez::{self, event, graphics, error};
 
 // Code adapted from the `ggez` home page.
 // https://ggez.rs
@@ -41,7 +38,7 @@ impl MainState {
     }
 }
 
-impl event::EventHandler for MainState {
+impl event::EventHandler<error::GameError> for MainState {
     fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
         self.world.update();
         Ok(())
@@ -53,21 +50,21 @@ impl event::EventHandler for MainState {
         let circle = graphics::Mesh::new_circle(
             ctx,
             graphics::DrawMode::fill(),
-            na::Point2::new(
+            [
                 0.5 * CELL_SIZE,
                 0.5 * CELL_SIZE,
-            ),
+            ],
             0.6 * CELL_SIZE,
             0.5,
-            graphics::WHITE,
+            graphics::Color::WHITE,
         )?;
 
         for (r, c, alive) in self.world.cells() {
             if alive {
-                let coord = na::Point2::new(
+                let coord = [
                     c as f32 * CELL_SIZE,
                     r as f32 * CELL_SIZE,
-                );
+                ];
                 graphics::draw(ctx, &circle, (coord,))?;
             }
         }
@@ -85,11 +82,11 @@ pub fn main() -> ggez::GameResult {
     let setup = ggez::conf::WindowSetup::default();
     let mode = ggez::conf::WindowMode::default();
 
-    let (ctx, event_loop) = &mut cb
+    let (ctx, event_loop) = cb
         .window_setup(setup.title("Life"))
         .window_mode(mode.dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
         .build()?;
 
-    let state = &mut MainState::new()?;
+    let state = MainState::new()?;
     event::run(ctx, event_loop, state)
 }
