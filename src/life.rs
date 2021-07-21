@@ -62,13 +62,9 @@ impl World {
         *self = World(new);
     }
 
-    // I don't believe this should be needed.
-    // The lifetime needs to be explicit here, I think.
-    // Looks like a Clippy bug to me.
-    #[allow(clippy::needless_lifetimes)]
-    pub fn cells<'a>(
-        &'a self,
-    ) -> impl Iterator<Item = (usize, usize, bool)> + 'a {
+    pub fn cells(
+        &self,
+    ) -> impl Iterator<Item = (usize, usize, bool)> + '_ {
         self.0.indexed_iter().map(|((r, c), &b)| (r, c, b))
     }
 }
