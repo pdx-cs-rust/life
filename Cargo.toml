@@ -7,6 +7,6 @@ license-file = "LICENSE"
 repository = "https://github.com/pdx-cs-rust/life"
 
 [dependencies]
-ndarray = "0.15.3"
-rand = "0.8.4"
-ggez = "0.6.0"
+ndarray = "0.15.4"
+rand = "0.8.5"
+ggez = "0.7.0"
