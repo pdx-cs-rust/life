@@ -7,6 +7,11 @@ license-file = "LICENSE"
 repository = "https://github.com/pdx-cs-rust/life"
 
 [dependencies]
-ndarray = "0.15.4"
+ndarray = "0.15.6"
 rand = "0.8.5"
-ggez = "0.7.0"
+
+[dependencies.ggez]
+git = "https://github.com/ggez/ggez"
+branch = "devel"
+version = "0.9.0-rc0"
+default_features = false

@@ -43,7 +43,10 @@ impl event::EventHandler<error::GameError> for MainState {
     }
 
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
-        graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
+        let mut canvas = graphics::Canvas::from_frame(
+            ctx,
+            Some([0.0, 0.0, 0.0, 1.0].into()),
+        );
 
         let circle = graphics::Mesh::new_circle(
             ctx,
@@ -58,24 +61,24 @@ impl event::EventHandler<error::GameError> for MainState {
             if alive {
                 let coord =
                     [c as f32 * CELL_SIZE, r as f32 * CELL_SIZE];
-                graphics::draw(ctx, &circle, (coord,))?;
+                canvas.draw(&circle, coord);
             }
         }
 
-        graphics::present(ctx)?;
-        Ok(())
+        canvas.finish(ctx)
     }
 }
 
 pub fn main() -> ggez::GameResult {
-    let cb =
-        ggez::ContextBuilder::new("Life", "PSU CS 410/510 Rust Su2019");
+    let cb = ggez::ContextBuilder::new("Life", "PSU CS 410/510 Rust Su2019");
     let setup = ggez::conf::WindowSetup::default();
-    let mode = ggez::conf::WindowMode::default();
+    let mode = ggez::conf::WindowMode::default()
+        .dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1)
+        .resizable(true);
 
     let (ctx, event_loop) = cb
         .window_setup(setup.title("Life"))
-        .window_mode(mode.dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
+        .window_mode(mode)
         .build()?;
 
     let state = MainState::new()?;
