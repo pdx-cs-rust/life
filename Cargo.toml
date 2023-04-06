@@ -2,7 +2,7 @@
 name = "life"
 version = "0.1.1"
 authors = ["CS 410/510 Rust Summer 2019 <bart@cs.pdx.edu>"]
-edition = "2018"
+edition = "2021"
 license-file = "LICENSE"
 repository = "https://github.com/pdx-cs-rust/life"
 
