@@ -22,7 +22,6 @@ use ggez::{self, error, event, graphics};
 
 struct MainState {
     world: World,
-    screen_coordinates: graphics::Rect,
     cell_size: f32,
     world_size: (usize, usize),
 }
@@ -33,12 +32,6 @@ impl MainState {
         let cell_size = 2.0;
         let s = MainState {
             world: World::random((world_size.1, world_size.0)),
-            screen_coordinates: graphics::Rect::new(
-                0.0,
-                0.0,
-                world_size.0 as f32 * cell_size,
-                world_size.1 as f32 * cell_size,
-            ),
             cell_size,
             world_size,
         };
@@ -86,12 +79,6 @@ impl event::EventHandler<error::GameError> for MainState {
         self.cell_size = f32::min(
             width / self.world_size.0 as f32,
             height / self.world_size.1 as f32,
-        );
-        self.screen_coordinates = graphics::Rect::new(
-            0.0,
-            0.0,
-            width * self.cell_size,
-            height * self.cell_size,
         );
         Ok(())
     }
