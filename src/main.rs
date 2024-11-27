@@ -53,10 +53,8 @@ impl event::EventHandler<error::GameError> for MainState {
     }
 
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
-        let mut canvas = graphics::Canvas::from_frame(
-            ctx,
-            graphics::Color::BLACK,
-        );
+        let mut canvas =
+            graphics::Canvas::from_frame(ctx, graphics::Color::BLACK);
 
         let cs = self.cell_size;
         let circle = graphics::Mesh::new_circle(
@@ -70,8 +68,7 @@ impl event::EventHandler<error::GameError> for MainState {
 
         for (r, c, alive) in self.world.cells() {
             if alive {
-                let coord =
-                    [c as f32 * cs, r as f32 * cs];
+                let coord = [c as f32 * cs, r as f32 * cs];
                 canvas.draw(&circle, coord);
             }
         }
@@ -90,8 +87,12 @@ impl event::EventHandler<error::GameError> for MainState {
             width / self.world_size.0 as f32,
             height / self.world_size.1 as f32,
         );
-        self.screen_coordinates =
-            graphics::Rect::new(0.0, 0.0, width * self.cell_size, height * self.cell_size);
+        self.screen_coordinates = graphics::Rect::new(
+            0.0,
+            0.0,
+            width * self.cell_size,
+            height * self.cell_size,
+        );
         Ok(())
     }
 }
@@ -99,7 +100,8 @@ impl event::EventHandler<error::GameError> for MainState {
 pub fn main() -> ggez::GameResult {
     let state = MainState::new()?;
 
-    let cb = ggez::ContextBuilder::new("Life", "PSU CS 410/510 Rust Su2019");
+    let cb =
+        ggez::ContextBuilder::new("Life", "PSU CS 410/510 Rust Su2019");
     let setup = ggez::conf::WindowSetup::default();
     let mode = ggez::conf::WindowMode::default()
         .dimensions(
